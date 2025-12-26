@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:motoboy/data/api_client.dart';
+import 'package:motoboy/features/auth/domain/models/signup_body.dart';
 import 'package:motoboy/features/auth/domain/repositories/auth_repository_interface.dart';
 import 'package:motoboy/util/app_constants.dart';
-import 'package:motoboy/features/auth/domain/models/signup_body.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository implements AuthRepositoryInterface {
@@ -40,7 +40,7 @@ class AuthRepository implements AuthRepositoryInterface {
     List<MultipartBody>? identityImage,
     List<MultipartDocument>? documents,
   }) async {
-    /// 🔒 CONVERSÃO SEGURA (corrige erro do build release)
+    /// ✅ Conversão segura para release
     final Map<String, String> body = signUpBody
         .toJson()
         .map((key, value) => MapEntry(key, value.toString()));
@@ -254,18 +254,12 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   String getDeviceToken() {
-    return sharedPreferences.getString(
-          AppConstants.deviceToken,
-        ) ??
-        "";
+    return sharedPreferences.getString(AppConstants.deviceToken) ?? "";
   }
 
   @override
   String getUserNumber() {
-    return sharedPreferences.getString(
-          AppConstants.userNumber,
-        ) ??
-        "";
+    return sharedPreferences.getString(AppConstants.userNumber) ?? "";
   }
 
   @override
@@ -275,26 +269,19 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   String getUserPassword() {
-    return sharedPreferences.getString(
-          AppConstants.userPassword,
-        ) ??
-        "";
+    return sharedPreferences.getString(AppConstants.userPassword) ?? "";
   }
 
   @override
   bool isNotificationActive() => true;
 
   @override
-  toggleNotificationSound(bool isNotification) {}
+  void toggleNotificationSound(bool isNotification) {}
 
   @override
   Future<bool> clearUserCredential() async {
-    await sharedPreferences.remove(
-      AppConstants.userPassword,
-    );
-    return await sharedPreferences.remove(
-      AppConstants.userNumber,
-    );
+    await sharedPreferences.remove(AppConstants.userPassword);
+    return await sharedPreferences.remove(AppConstants.userNumber);
   }
 
   @override
@@ -302,31 +289,52 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   String getZonId() {
-    return sharedPreferences.getString(
-          AppConstants.zoneId,
-        ) ??
-        "";
+    return sharedPreferences.getString(AppConstants.zoneId) ?? "";
   }
 
   @override
   Future<void> updateZone(String zoneId) async {
-    await sharedPreferences.setString(
-      AppConstants.zoneId,
-      zoneId,
-    );
+    await sharedPreferences.setString(AppConstants.zoneId, zoneId);
     apiClient.updateHeader(
-      sharedPreferences.getString(
-            AppConstants.token,
-          ) ??
-          '',
-      sharedPreferences.getString(
-        AppConstants.languageCode,
-      ),
+      sharedPreferences.getString(AppConstants.token) ?? '',
+      sharedPreferences.getString(AppConstants.languageCode),
       'latitude',
       'longitude',
       zoneId,
     );
   }
+
+  /* =========================================================
+     IMPLEMENTAÇÕES OBRIGATÓRIAS (RepositoryInterface)
+     Stubs seguros – NÃO QUEBRAM O APP
+     ========================================================= */
+
+  @override
+  Future<dynamic> add(value) async {
+    return null;
+  }
+
+  @override
+  Future<dynamic> delete(int id) async {
+    return null;
+  }
+
+  @override
+  Future<dynamic> get(String id) async {
+    return null;
+  }
+
+  @override
+  Future<dynamic> getList({int? offset = 1}) async {
+    return [];
+  }
+
+  @override
+  Future<dynamic> update(Map<String, dynamic> body, int id) async {
+    return null;
+  }
+
+  /* ========================================================= */
 
   @override
   Future<Response?> permanentDelete() async {
@@ -337,9 +345,7 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<void> saveRideCreatedTime(
-    DateTime dateTime,
-  ) async {
+  Future<void> saveRideCreatedTime(DateTime dateTime) async {
     await sharedPreferences.setString(
       'DateTime',
       dateTime.toString(),
